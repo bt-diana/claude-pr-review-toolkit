@@ -187,13 +187,21 @@ Requests extension, where each comment can be edited or deleted before submittin
 
 ## What a run produces
 
+A run leaves two things behind:
+
+- a pending review on the PR, with every finding posted as an inline comment, ready to
+  edit and submit
+- a scored `review.md` file, written locally, that turns those same findings into a
+  rubric score
+
 ![A finished review.md, scored against the task rubric](docs/images/review-md.png)
 
 [`example/`](example/) holds a complete review of one student's PR for the API Querying task:
 the rubric it was scored against, the raw JSON each agent
-wrote, and the finished `review.md` at 93/100. Its README walks through the run — which
-agent found what, why four findings were commented on but not scored, and which of the
-thirteen drafted comments I rewrote, dropped, or added by hand before submitting.
+wrote, the 11 inline comments actually posted to the PR, and the finished `review.md` at
+93/100. Its README walks through the run — which agent found what, why four findings were
+commented on but not scored, and which of the thirteen drafted comments I rewrote, dropped,
+or added by hand before submitting.
 
 ## Design notes
 
