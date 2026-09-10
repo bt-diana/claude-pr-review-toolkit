@@ -161,12 +161,11 @@ writes `.claude/templates/<task>.md` with the points summing to 100.
 
 ## What a run produces
 
-[`example/`](example/) holds a complete review of
-[solarsungai/class-components#5](https://github.com/solarsungai/class-components/pull/5)
-(the API Querying task): the rubric it was scored against, the raw JSON each agent wrote,
-and the finished `review.md` at 93/100. Its README walks through the run — which agent found
-what, why four findings were commented on but deliberately not scored, and which of the
-thirteen drafted comments I rewrote, dropped, or added by hand before submitting.
+[`example/`](example/) holds a complete review of one student's PR for the API Querying task
+(the student is anonymized): the rubric it was scored against, the raw JSON each agent
+wrote, and the finished `review.md` at 93/100. Its README walks through the run — which
+agent found what, why four findings were commented on but deliberately not scored, and which
+of the thirteen drafted comments I rewrote, dropped, or added by hand before submitting.
 
 ## Design notes
 
