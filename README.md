@@ -1,16 +1,9 @@
 # RS School React — PR Review Toolkit
 
-A [Claude Code](https://claude.com/claude-code) setup that drafts code-quality reviews for
+setup that drafts code-quality reviews for
 [RS School](https://rs.school/) React course pull requests.
 
-I mentored on the RS School React course, next to a full-time job. Five students, one task
-a week. Every task meant reading a PR against a rubric, leaving comments on the exact lines
-that needed work, and filling in a scored review — five times, on the same task, every
-week. This toolkit is what I built to carry that load.
-
-It runs seven checks over the branch in parallel, posts every finding as a **pending**
-(draft) review on the PR, and writes the scored review file. Nothing goes to the student
-automatically. The mentor reads the draft, edits it, and submits it themselves.
+A [Claude Code](https://claude.com/claude-code) toolkit built to review student PRs the way I did as a mentor. Seven subagents each check one thing — commits, TypeScript, code quality, tests, and more — and the results get combined into a posted review and a scored document.
 
 See [`example/`](example/) for a real review it produced, with every artifact from the run.
 
