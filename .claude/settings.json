@@ -1,0 +1,68 @@
+{
+  "permissions": {
+    "defaultMode": "plan",
+
+    "allow": [
+      "Read",
+      "Glob",
+      "Grep",
+
+      "Bash(cd *)",
+      "Bash(ls *)",
+      "Bash(dir *)",
+      "Bash(find *)",
+      "Bash(cat *)",
+      "Bash(type *)",
+      "Bash(echo *)",
+      "Bash(pwd)",
+
+      "Bash(git status)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git branch)",
+      "Bash(git branch -l)",
+      "Bash(git remote -v)",
+      "Bash(git -C * status)",
+      "Bash(git -C * diff *)",
+      "Bash(git -C * log *)",
+      "Bash(git -C * show *)",
+      "Bash(git -C * branch)",
+      "Bash(git -C * branch -l)",
+      "Bash(git -C * remote -v)",
+
+      "Bash(npm run *)",
+
+      "Edit(.claude/**)",
+      "Write(.claude/**)",
+      "Bash(rm .claude/**)",
+      "Bash(rmdir .claude/**)",
+      "Bash(del .claude\\**)",
+      "Bash(rd .claude\\**)"
+    ],
+
+    "deny": [
+      "Bash(git merge *)",
+      "Bash(git rebase *)",
+      "Bash(git reset *)",
+      "Bash(git stash *)",
+      "Bash(git cherry-pick *)",
+      "Bash(git rm *)",
+
+      "Bash(git -C * add *)",
+      "Bash(git -C * commit *)",
+      "Bash(git -C * push *)",
+      "Bash(git -C * merge *)",
+      "Bash(git -C * rebase *)",
+      "Bash(git -C * reset *)",
+      "Bash(git -C * stash *)",
+      "Bash(git -C * cherry-pick *)",
+      "Bash(git -C * tag *)",
+      "Bash(git -C * rm *)",
+
+      "Bash(curl *)",
+      "Bash(wget *)",
+      "Bash(Invoke-WebRequest *)"
+    ]
+  }
+}
