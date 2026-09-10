@@ -1,0 +1,27 @@
+{
+  "agent": "general",
+  "comments": [
+    {
+      "path": "rs-react-app/src/components/Flyout.tsx",
+      "start_line": 39,
+      "line": 41,
+      "start_side": "RIGHT",
+      "side": "RIGHT",
+      "body": "This call now rejects through RTK Query's `.unwrap()`, which throws a `FetchBaseQueryError` or `SerializedError` plain object, not a real `Error` instance. The `catch` block below still checks `error instanceof Error`, which is usually false for this rejection type, so the user sees the generic \"Unknown error\" text even when the API returned a real message. Consider reusing the `getErrorMessage` helper (already used in `MainPage.tsx` and `DetailPanel.tsx`) so the shown message reflects the actual failure."
+    },
+    {
+      "path": "rs-react-app/src/services/pokemonApi.ts",
+      "line": 12,
+      "side": "RIGHT",
+      "body": "`Number(import.meta.env.VITE_CACHE_TTL) || 60` falls back to 60 whenever the parsed value is `0` (or `NaN`), so it is not possible to explicitly disable caching by setting the env var to `0`. A check like `Number.isNaN(...)` would preserve an intentional `0`."
+    },
+    {
+      "path": "rs-react-app/src/pages/MainPage.tsx",
+      "start_line": 118,
+      "line": 120,
+      "start_side": "RIGHT",
+      "side": "RIGHT",
+      "body": "The loading overlay (`<div className=\"loader loader--overlay\">Loading...</div>`) has no `role=\"status\"` / `aria-live=\"polite\"`. Screen reader users get no announcement that new results are loading. Adding a live region here would make the loading state accessible."
+    }
+  ]
+}

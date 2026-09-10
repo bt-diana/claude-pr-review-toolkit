@@ -1,0 +1,21 @@
+{
+  "agent": "tests",
+  "comments": [
+    {
+      "path": "rs-react-app/src/services/pokemonApi.test.ts",
+      "subject_type": "file",
+      "body": "The test names in this file describe the scenario (for example 'transforms response to results and count', 'computes correct offset for page 2') but they do not start with 'should'. The rest of the suite (MainPage.test.tsx, DetailPanel.test.tsx, Search.test.tsx, getErrorMessage.test.ts, navigation.test.ts) uses the 'should do something' phrasing. Using the same convention here keeps the suite consistent."
+    },
+    {
+      "path": "rs-react-app/src/components/Flyout.test.tsx",
+      "subject_type": "file",
+      "body": "None of the test names in this file start with 'should' (for example 'renders nothing when there are no selected pokemons', 'Unselect all button dispatches clearAllSelections', 'Download button triggers CSV download on success'). Most of the rest of the suite phrases test names as 'should do something', which makes the intent easier to scan."
+    },
+    {
+      "path": "rs-react-app/src/hooks/useSearchTermLocalStorage.test.tsx",
+      "line": 5,
+      "side": "RIGHT",
+      "body": "The describe block is named 'storage service', but the tested unit is the useSearchTermLocalStorage hook (imported here as useLocalStorage). Naming the describe block after the hook, e.g. describe('useSearchTermLocalStorage', ...), makes it easier to find which tests cover which unit."
+    }
+  ]
+}

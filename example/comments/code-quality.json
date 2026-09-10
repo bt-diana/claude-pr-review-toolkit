@@ -1,0 +1,55 @@
+{
+  "agent": "code-quality",
+  "comments": [
+    {
+      "path": "rs-react-app/src/components/Flyout.tsx",
+      "start_line": 39,
+      "line": 41,
+      "start_side": "RIGHT",
+      "side": "RIGHT",
+      "body": "This code dispatches `getPokemonByName.initiate(pokemon)` and calls `.unwrap()`, but it never unsubscribes. By default `initiate()` subscribes to the cache entry, so the reference count never returns to zero and `keepUnusedDataFor` cannot evict this data later. For a one-off action like a CSV download, the common convention is to pass `{ subscribe: false }` so the fetch does not leave a lasting subscription behind.\n\n```suggestion\n          dispatch(\n            pokemonApi.endpoints.getPokemonByName.initiate(pokemon, {\n              subscribe: false,\n            })\n          ).unwrap()\n```"
+    },
+    {
+      "path": "rs-react-app/src/pages/MainPage.tsx",
+      "start_line": 97,
+      "line": 117,
+      "start_side": "RIGHT",
+      "side": "RIGHT",
+      "body": "Two small things in this block. First, the outside-click check uses `(e.target as HTMLElement).closest('.pokemon-card')` to detect clicks outside a card. This DOM-selector approach breaks silently if the class name ever changes. A common convention is composition instead: call `e.stopPropagation()` in the card itself (the way `ResultItem` already does for its checkbox), so the panel's own click handler only fires for clicks truly outside a card.\n\nSecond, `createSearchQueryString({ page, search: searchFromUrl })` is built twice with the same arguments here and again in the `Results` `onSelect` handler a few lines below. Computing it once above and reusing the value in both handlers would remove the duplication."
+    },
+    {
+      "path": "rs-react-app/src/pages/MainPage.tsx",
+      "start_line": 40,
+      "line": 57,
+      "start_side": "RIGHT",
+      "side": "RIGHT",
+      "body": "👍 Good use of RTK Query here: `data`, `isFetching`, and `error` are read straight from the query cache, with `skip` flags choosing between the page and name queries. No manual `loading`/`error` state or fetch effect is needed anymore."
+    },
+    {
+      "path": "rs-react-app/src/pages/MainPage.tsx",
+      "start_line": 66,
+      "line": 68,
+      "start_side": "RIGHT",
+      "side": "RIGHT",
+      "body": "👍 Nice touch: the refresh button explicitly invalidates the `PokemonList`/`PokemonDetail` tags instead of forcing a full reload. This matches the manual cache-invalidation requirement for this task well."
+    },
+    {
+      "path": "rs-react-app/src/constants.ts",
+      "subject_type": "file",
+      "body": "👍 Good use of named constants here: `Routes`, `URL_PARAMS`, and `DEFAULT_PAGE` replace the magic strings and numbers that used to be scattered across `MainPage`, `DetailPanel`, and `App`."
+    },
+    {
+      "path": "rs-react-app/src/hooks/useSearchTermLocalStorage.tsx",
+      "subject_type": "file",
+      "body": "This file has the `.tsx` extension, but it contains no JSX, only a hook that returns plain functions. Files without JSX are usually named `.ts`. Consider renaming this file to `useSearchTermLocalStorage.ts`."
+    },
+    {
+      "path": "rs-react-app/src/hooks/useSearchTermLocalStorage.test.tsx",
+      "start_line": 3,
+      "line": 5,
+      "start_side": "RIGHT",
+      "side": "RIGHT",
+      "body": "The hook was renamed from `useLocalStorage` to `useSearchTermLocalStorage` in a later commit, but this test still imports it under the old name (`useLocalStorage`) and groups the tests under a generic `describe('storage service', ...)` label. Renaming the import and the describe block to match the hook's real name would keep this file consistent with the other test files and easier to find."
+    }
+  ]
+}

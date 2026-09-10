@@ -3,12 +3,16 @@
 A [Claude Code](https://claude.com/claude-code) setup that drafts code-quality reviews for
 [RS School](https://rs.school/) React course pull requests.
 
-I mentor on the RS School React course. Every task means reading a student's PR against a
-rubric, leaving inline comments on the exact lines that need work, and filling in a scored
-review document. This toolkit does the mechanical part of that: it runs seven checks over
-the branch in parallel, posts every finding as a **pending** (draft) review on the PR, and
-writes the scored review file. Nothing is published to the student — I read the draft, edit
-it, and submit it myself.
+I mentor on the RS School React course, alongside a full-time job. Five students, one task
+a week, and every task means reading a PR against a rubric, leaving inline comments on the
+exact lines that need work, and filling in a scored review document — five times over, on
+the same task, every week. That is what this exists to absorb.
+
+The toolkit runs seven checks over the branch in parallel, posts every finding as a
+**pending** (draft) review on the PR, and writes the scored review file. Nothing is
+published to the student — I read the draft, edit it, and submit it myself.
+
+See [`example/`](example/) for a real review it produced, with every artifact from the run.
 
 ## How it works
 
@@ -31,10 +35,11 @@ it, and submit it myself.
    review on the PR, in one request           scores, writes review.md
 ```
 
-The seven check agents run **concurrently** and never talk to GitHub. Each one writes its
+The seven check agents run **concurrently** and never talk to GitHub. Each writes its
 line-anchored findings to its own JSON file and returns everything that does not sit on a
-changed line as text. Posting happens once, from one place. Scoring happens once, in one
-place.
+changed line as text. (The commits agent is the exception: a commit message is not a line in
+the diff, so it returns text only.) Posting happens once, from one place. Scoring happens
+once, in one place.
 
 ## What's in here
 
@@ -55,7 +60,67 @@ place.
 │   └── rs-react-review-writer.md            the only place scoring happens
 ├── templates/                               one rubric per course task
 └── settings.json                            permissions (mentee clones are read-only)
+
+example/                                     a real review, with every artifact from the run
 ```
+
+## How it got built
+
+None of this was designed up front. Every piece exists because the version before it broke
+in a specific way.
+
+**1. Templates first, still reviewing by hand.** I started by writing a rubric template per
+task, so I was at least checking the same things for every student and scoring them the same
+way. It made the reviews more consistent and saved almost no time — reading the code was
+always the slow part. But it left me with a written, precise description of what I check,
+which is exactly the kind of thing you can hand to an agent.
+
+**2. Feeding the template to an agent — which did not work.** The first version took a
+template and a PR and produced reviews that read well and missed the problems I could see in
+thirty seconds. It had the checklist but not the judgement. So I reviewed several PRs by
+hand and gave the agent my own reviews to analyse — not "here are the rules" but "here is
+what I actually commented on, work out what I pay attention to". Those findings are what the
+check agents encode today: that a component doing five things costs a lot of points while a
+stray magic number costs one, that a name is only worth flagging when it actively misleads.
+
+**3. One agent doing everything was too slow.** Commit messages, TypeScript, code quality,
+tests, tooling, task requirements — one agent, in sequence, over a PR touching 60 files. It
+took long enough that I stopped wanting to run it. Splitting it into per-area agents that run
+in parallel fixed the speed, and had a second benefit I did not expect: a small agent with
+one job is much easier to correct. When it reports something wrong, you know exactly which
+file to edit.
+
+**4. A subagent cannot spawn subagents.** The plan was a main agent that dispatches the
+checks, collects their output, and writes `review.md`. Claude Code does not allow that —
+delegation is one level deep, so an agent cannot launch other agents. Turning the coordinator
+into a **skill** solved it: a skill runs in the main loop, where the Agent tool works, so it
+can dispatch all seven checks at once.
+
+**5. Comments in a markdown file are not where comments belong.** For a while the agents
+wrote every finding into `review.md` as a list of `file:line` references and I copied them
+onto the PR by hand — which is the tedious part of reviewing, still fully manual. So I moved
+posting to `gh`. That surfaced the next problem: several agents each posting their own
+comments produced several separate review threads on one PR, and they could not reliably
+append to a review that already existed. The fix is the shape the pipeline has now — **every
+agent writes its comments to a JSON file, and one posting step merges them into a single
+request.** That is where `rs-school-react-post-pending-review` came from.
+
+**6. Scoring moved into its own agent.** Writing `review.md` was still the coordinator's job,
+tangled up with dispatching. Pulling it out into `rs-react-review-writer` made scoring the
+one thing one agent does, and made scores comparable across students because they all come
+from the same place.
+
+**7. Then: run it, correct it, run it again.** Every review surfaced something — a false
+positive, a nit not worth flagging, a formatting habit of mine it kept getting wrong. Each
+one became a rule. Don't score missing return types. Flag props drilling only when more than
+one component just forwards. A repo-wide formatting failure is one finding, not one per file.
+After enough rounds it became genuinely good, and it carried me through the reviews left at
+the end of the course.
+
+**If you want to do this for your own work:** write down what you actually do first, in a
+form precise enough to check against. Then automate one piece at a time and let each failure
+tell you what the next piece is. The pipeline here looks deliberate. It is really seven
+problems, each fixed in the smallest way that worked.
 
 ## Requirements
 
@@ -72,7 +137,7 @@ Open Claude Code in this folder and give it the PR:
 
 ```
 Review https://github.com/<owner>/<repo>/pull/42
-Local clone: D:\Projects\React Q2 2026\<student>
+Local clone: <path to a clone of the student's repo>
 ```
 
 A local clone is optional — without one the skill clones the PR branch itself. Everything
@@ -94,15 +159,24 @@ requirements that are about **how the code is written** (which library, which pa
 must be typed and tested), drops the functional ones ("shows 20 cards per page"), and
 writes `.claude/templates/<task>.md` with the points summing to 100.
 
+## What a run produces
+
+[`example/`](example/) holds a complete review of
+[solarsungai/class-components#5](https://github.com/solarsungai/class-components/pull/5)
+(the API Querying task): the rubric it was scored against, the raw JSON each agent wrote,
+and the finished `review.md` at 93/100. Its README walks through the run — which agent found
+what, why four findings were commented on but deliberately not scored, and which of the
+thirteen drafted comments I rewrote, dropped, or added by hand before submitting.
+
 ## Design notes
 
-A few decisions that took a couple of course tasks to arrive at:
+**Pending reviews only.** The workflow never submits, approves, or requests changes — it
+only ever creates a draft, so nothing reaches the student that I have not read.
 
-**Pending reviews only, one request.** The workflow never submits, approves, or requests
-changes — it only creates a draft. Early versions had each agent post its own comments as
-it finished, which meant seven separate review threads on the PR and no chance to edit
-before the student saw them. Now every agent writes JSON and a single request creates one
-draft review.
+**Praise is anchored to a line too.** Agents post short `👍` notes on code that is done
+well; the review-writer skips them when scoring. A review made only of complaints is a bad
+review, and "good use of RTK Query here" on the actual lines lands better than a warm
+sentence at the top.
 
 **Comment lines are validated against the three-dot diff.** GitHub anchors review comments
 against the merge-base diff, not `base..HEAD`. One comment on a line outside that diff
