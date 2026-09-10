@@ -1,4 +1,16 @@
+# This working folder also holds local clones of mentee repositories,
+# so everything is ignored by default and the toolkit is allowlisted back in.
 *
+
 !.gitignore
+!README.md
 !.claude/
-./claude/reviews
+!.claude/**
+
+# Real mentee reviews and the PR registry stay local — they contain
+# student names, handles, and per-student findings.
+.claude/reviews/
+
+# Per-machine settings and agent memory are not shared.
+.claude/settings.local.json
+.claude/agent-memory/
