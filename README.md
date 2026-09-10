@@ -3,14 +3,14 @@
 A [Claude Code](https://claude.com/claude-code) setup that drafts code-quality reviews for
 [RS School](https://rs.school/) React course pull requests.
 
-I mentor on the RS School React course, alongside a full-time job. Five students, one task
-a week, and every task means reading a PR against a rubric, leaving inline comments on the
-exact lines that need work, and filling in a scored review document — five times over, on
-the same task, every week. That is what this exists to absorb.
+I mentored on the RS School React course, alongside a full-time job. Five students, one
+task a week, and every task meant reading a PR against a rubric, leaving inline comments on
+the exact lines that needed work, and filling in a scored review document — five times over,
+on the same task, every week. This toolkit is what I built to absorb that.
 
-The toolkit runs seven checks over the branch in parallel, posts every finding as a
-**pending** (draft) review on the PR, and writes the scored review file. Nothing is
-published to the student — I read the draft, edit it, and submit it myself.
+It runs seven checks over the branch in parallel, posts every finding as a **pending**
+(draft) review on the PR, and writes the scored review file. Nothing is published to the
+student automatically — the mentor reads the draft, edits it, and submits it themselves.
 
 See [`example/`](example/) for a real review it produced, with every artifact from the run.
 
@@ -98,7 +98,7 @@ can dispatch all seven checks at once.
 
 **5. Comments in a markdown file are not where comments belong.** For a while the agents
 wrote every finding into `review.md` as a list of `file:line` references and I copied them
-onto the PR by hand — which is the tedious part of reviewing, still fully manual. So I moved
+onto the PR by hand — the tedious part of reviewing, and still fully manual. So I moved
 posting to `gh`. That surfaced the next problem: several agents each posting their own
 comments produced several separate review threads on one PR, and they could not reliably
 append to a review that already existed. The fix is the shape the pipeline has now — **every
@@ -131,22 +131,6 @@ problems, each fixed in the smallest way that worked.
 
 ## Using it
 
-### Review a PR
-
-Open Claude Code in this folder and give it the PR:
-
-```
-Review https://github.com/<owner>/<repo>/pull/42
-Local clone: <path to a clone of the student's repo>
-```
-
-A local clone is optional — without one the skill clones the PR branch itself. Everything
-else runs unattended: install dependencies, dispatch the seven checks, post one pending
-review, write `.claude/reviews/<student>-<task>.md`.
-
-The pending review then shows up under **Review in progress** in the VS Code GitHub Pull
-Requests extension, where each comment can be edited or deleted before submitting.
-
 ### Generate a rubric for a new task
 
 ```
@@ -158,6 +142,27 @@ The `rs-school-react-review-template` skill reads the task description, keeps on
 requirements that are about **how the code is written** (which library, which pattern, what
 must be typed and tested), drops the functional ones ("shows 20 cards per page"), and
 writes `.claude/templates/<task>.md` with the points summing to 100.
+
+### Review a PR
+
+Open Claude Code in this folder and give it the PR and the matching template:
+
+```
+Review https://github.com/<owner>/<repo>/pull/42
+Template: .claude/templates/<task-name>.md
+Local clone: <path to a clone of the student's repo>
+```
+
+The skill tries to infer the template from the PR's branch name or title, but naming it
+explicitly is safer — it's required whenever the branch name doesn't match one of the
+templates in `.claude/templates/`, including one just generated with the skill below.
+
+A local clone is optional — without one the skill clones the PR branch itself. Everything
+else runs unattended: install dependencies, dispatch the seven checks, post one pending
+review, write `.claude/reviews/<student>-<task>.md`.
+
+The pending review then shows up under **Review in progress** in the VS Code GitHub Pull
+Requests extension, where each comment can be edited or deleted before submitting.
 
 ## What a run produces
 
