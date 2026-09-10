@@ -10,6 +10,8 @@
 !.claude/**
 !example/
 !example/**
+!docs/
+!docs/**
 
 # Real mentee reviews and the PR registry stay local — they contain
 # student names, handles, and per-student findings.

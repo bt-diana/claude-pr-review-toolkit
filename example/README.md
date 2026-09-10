@@ -4,29 +4,32 @@ This folder holds the artifacts from an actual review the pipeline produced.
 
 **Task:** *API Querying* — RTK Query, explicit cache invalidation, cache TTL from an
 environment variable
-**Submitted:** 11 inline comments on the student's PR
+**PR:** [solarsungai/class-components#5](https://github.com/solarsungai/class-components/pull/5) —
+the student agreed to make it public
 **Score:** 93/100
 
-The student is anonymized here. Everything else — every finding, every comment body, the
-scoring — is exactly what the run produced.
+Everything here — every finding, every comment body, the scoring — is exactly what the run
+produced.
+
+![The submitted review on GitHub — review.md pasted in as the top comment, plus inline comments on the changed lines](../docs/images/review.png)
 
 ## Files in this folder
 
 | File | What it is |
 |---|---|
 | `template.md` | The rubric the PR was scored against — a copy of `.claude/templates/api-queries.md` as it was at the time |
-| `comments/*.json` | What each check agent wrote. One file per agent; this is the raw pipeline output |
+| `comments/*.json` | What each check agent wrote. One file per agent, this is the raw pipeline output |
 | `review.md` | The scored review document the review-writer produced |
 
 ## How this run went
 
 **1. Task identified from the branch.** The PR branch is `api-queries`, so the workflow
 loaded `.claude/templates/api-queries.md`. The template decides what gets checked and what
-each criterion is worth — nothing outside it is evaluated.
+each criterion is worth. Nothing outside it gets evaluated.
 
 **2. Previous PRs collected.** `pr-links.md` lists this student's earlier task PRs (#3
 hooks-and-routing, #4 state-management). The review-writer reads the reviews already left
-there so a problem carried over from an earlier task is not charged twice.
+there, so a problem carried over from an earlier task isn't charged twice.
 
 **3. Seven agents ran in parallel.** Each wrote its line-anchored findings to its own JSON
 file in `comments/`:
@@ -42,17 +45,17 @@ file in `comments/`:
 | `security` | 0 | — |
 
 A commit message is not a line in the diff, so the commits agent has nothing to anchor to
-and returns text only. An empty JSON file means the agent found nothing to comment on —
+and just returns text. An empty JSON file means the agent found nothing worth a comment —
 `typescript.json`, `lint-format.json`, and `security.json` are all empty here.
 
-`comments/husky.json` is a leftover from a check that has since been retired; Husky setup
+`comments/husky.json` is a leftover from a check that has since been retired. Husky setup
 is no longer part of any rubric.
 
 **4. One pending review posted.** The posting skill merged all 13 comments into a single
 request. Three of them were whole-file findings (`constants.ts`,
-`useSearchTermLocalStorage.tsx`, `pokemonApi.test.ts`) — GitHub's draft-review API has no
-file-level comment type, so each was re-anchored to that file's first changed line before
-posting.
+`useSearchTermLocalStorage.tsx`, `pokemonApi.test.ts`). GitHub's draft-review API has no
+file-level comment type, so each one was re-anchored to that file's first changed line
+before posting.
 
 **5. The review document was written.** The review-writer mapped each finding to a rubric
 criterion, applied the deductions, and wrote `review.md`.
@@ -61,19 +64,21 @@ criterion, applied the deductions, and wrote `review.md`.
 
 Three of the seven code-quality comments start with 👍 — good use of RTK Query, explicit
 tag invalidation on the refresh button, named constants replacing scattered magic strings.
-They are posted inline like any other comment, and the review-writer skips them when
-scoring. A review that only lists problems is demoralising to receive, and praise anchored
-to a specific line is worth more than a sentence of encouragement at the top.
+They get posted inline like any other comment, and the review-writer just skips them when
+scoring. A review that only lists problems is discouraging to read, and praise on the
+actual line is worth more than one warm sentence at the top.
+
+![One of the positive comments, on the exact line it praises — good use of RTK Query](../docs/images/pr-comment-2.png)
 
 ## The draft is a draft
 
 The pipeline produced 13 comments; 11 were submitted. The differences:
 
 - The two comments on `Flyout.tsx` (one about `initiate()` never unsubscribing, one about
-  `.unwrap()` rejecting with a non-`Error` object) were replaced by a single question in my
-  own voice — *"Do you really need to use `initiate` here?"* — which is a better way to
-  teach than two paragraphs of diagnosis.
-- The accessibility note on the loading overlay did not make it into the submitted review.
+  `.unwrap()` rejecting with a non-`Error` object) got replaced by a single question in my
+  own voice — *"Do you really need to use `initiate` here?"* — which teaches better than
+  two paragraphs of diagnosis.
+- The accessibility note on the loading overlay didn't make it into the submitted review.
 - A comment about props not being wrapped in `Readonly<...>` was added by hand.
 
 This is the point of a pending review. The agents are good at finding things and reliably
@@ -89,8 +94,10 @@ bad at deciding what a particular student needs to hear this week.
 | DRY | 5/6 | `createSearchQueryString` built twice with the same arguments |
 | Tests cover the query layer | 5/8 | No test for the error path or caching behaviour; test names inconsistent |
 
+![One of the issue comments, on the exact line it flags — the outside-click check and the duplicated createSearchQueryString call](../docs/images/pr-comment-1.png)
+
 Four findings were flagged but **not** scored, because reviews of the student's earlier
 tasks had already charged for them: missing `strict` mode, `.tsx` files with no JSX, the
 `closest('.pokemon-card')` outside-click check, and a `describe('storage service')` block
-naming the wrong unit. Each is still commented on — a student should hear that a problem is
-still there — but the points come off once, in the task where it first appeared.
+naming the wrong unit. Each one still gets a comment, because a student should hear that a
+problem is still there. The points just come off once, in the task where it first showed up.
