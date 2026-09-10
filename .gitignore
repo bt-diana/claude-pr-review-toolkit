@@ -4,6 +4,8 @@
 
 !.gitignore
 !README.md
+!package.json
+!LICENSE
 !.claude/
 !.claude/**
 !example/
