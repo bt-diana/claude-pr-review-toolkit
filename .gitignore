@@ -15,6 +15,10 @@
 # student names, handles, and per-student findings.
 .claude/reviews/
 
+# Generated rubrics are per-user output, not toolkit content — see
+# example/template.md for what one looks like.
+.claude/templates/
+
 # Per-machine settings and agent memory are not shared.
 .claude/settings.local.json
 .claude/agent-memory/

@@ -58,7 +58,7 @@ once, in one place.
 │   ├── rs-react-security-check.md           XSS sinks, unsafe URLs, secret leakage
 │   ├── rs-react-general-review.md           correctness, a11y, npm audit
 │   └── rs-react-review-writer.md            the only place scoring happens
-├── templates/                               one rubric per course task
+├── templates/                               empty — generated per task, see below
 └── settings.json                            permissions (mentee clones are read-only)
 
 example/                                     a real review, with every artifact from the run
@@ -131,6 +131,9 @@ problems, each fixed in the smallest way that worked.
 
 ## Using it
 
+No rubrics ship with this repo — `.claude/templates/` starts empty. Generate one per task,
+or copy [`example/template.md`](example/template.md) as a starting point.
+
 ### Generate a rubric for a new task
 
 ```
@@ -155,7 +158,8 @@ Local clone: <path to a clone of the student's repo>
 
 The skill tries to infer the template from the PR's branch name or title, but naming it
 explicitly is safer — it's required whenever the branch name doesn't match one of the
-templates in `.claude/templates/`, including one just generated with the skill below.
+templates already in `.claude/templates/`, including one just generated with the skill
+above.
 
 A local clone is optional — without one the skill clones the PR branch itself. Everything
 else runs unattended: install dependencies, dispatch the seven checks, post one pending

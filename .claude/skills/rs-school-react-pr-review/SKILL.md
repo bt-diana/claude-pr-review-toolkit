@@ -70,8 +70,9 @@ description page. If the template doesn't list a criterion, it isn't evaluated. 
 template exists for the task and the user did not name one, note it in the final summary and
 continue with best-effort scoring.
 
-Available templates: `routing-and-hooks.md`, `state-management.md`, `api-queries.md`,
-`forms.md`, `performance.md`, `nextjs-ssr.md`.
+No templates ship with this toolkit — `.claude/templates/` is empty until the user runs the
+`rs-school-react-review-template` skill for a task, or writes one by hand. See
+[`example/template.md`](../../../example/template.md) for a real one.
 
 ### Step 3 — Set up the mentee's code
 
