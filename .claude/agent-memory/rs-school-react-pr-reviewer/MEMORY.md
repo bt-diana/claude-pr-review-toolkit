@@ -1,4 +1,0 @@
-- [Diana — user profile](user_diana.md) — RS School React mentor, wants GitHub-ready code-quality-only review drafts, no emojis
-- [RS School Q2 2026 project context](project_rs_school_q2_2026.md) — Fayzullo05 mentee, hooks-and-routing task, React 19 + TS 6 stack
-- [Feedback: review scope is code quality only](feedback_review_scope.md) — never score against functional rubric; Diana's explicit instruction
-- [Project: oneilcode mentee](project_oneilcode.md) — Viktoria O'Neil review history; hooks-and-routing scored 51/100 (−20 localStorage penalty)
