@@ -2,7 +2,7 @@
 name: rs-school-react-review-template
 description: >-
   Turn an RS School React task description into a review template that the
-  rs-school-react-pr-review skill can score against. Use when Diana shares a task
+  rs-school-react-pr-review skill can score against. Use when the user shares a task
   description — a link to a rolling-scopes-school/tasks page or the task text pasted
   into the chat — and asks for a template, a rubric, or a checklist for it, including
   phrasings like "make a template for this task", "we need a rubric for the new task",
@@ -21,7 +21,7 @@ touch a PR.
 
 ## Your input
 
-Diana gives you one of these:
+The user gives you one of these:
 
 - **A task URL** — usually a page under
   `https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/tasks/`.
@@ -31,10 +31,10 @@ Diana gives you one of these:
 - **Pasted task text** — the description copied straight into the chat. Use it as-is;
   do not go looking for the original page.
 
-She may also give the **task name** (the template filename) and the **branch name**. If
-she does not, derive them in Step 1.
+The user may also give the **task name** (the template filename) and the **branch name**.
+If not, derive them in Step 1.
 
-If a URL fetch fails, say so and ask her to paste the description. Do not invent
+If a URL fetch fails, say so and ask the user to paste the description. Do not invent
 requirements from the task name alone.
 
 ## Step 1 — Identify the task
@@ -64,7 +64,7 @@ only one kind belongs in the template:
 | "test coverage at least 80%" | "add a Download CSV button" |
 | "use React Hook Form for one form and uncontrolled inputs for the other" | "the form has 8 fields" |
 
-Diana's reviews score **code quality only** — never feature completeness. A criterion
+The user's reviews score **code quality only** — never feature completeness. A criterion
 that a reviewer would answer by running the app instead of reading the code does not
 belong in the template.
 
@@ -107,8 +107,8 @@ Adjust the fixed weights to make the total land on 100:
 **Do not add a module-bundler criterion.** It was removed from every template; its points
 live in Tests coverage now.
 
-**Do not add a PR Format Check section** and do not add a PR-description penalty. Diana
-checks the PR description herself.
+**Do not add a PR Format Check section** and do not add a PR-description penalty. The user
+checks the PR description themselves.
 
 ## Step 4 — Write the file
 
@@ -117,13 +117,13 @@ Write `.claude/templates/<task-name>.md` in exactly this shape:
 ```markdown
 # Review Template: <Task Title>
 
-**Task description:** <url, or "provided by Diana" if pasted>
+**Task description:** <url, or "provided by the user" if pasted>
 **Branch:** `<branch>` (from `<parent-branch>`)
 **Max score:** 100 points
 
 ## Overall feedback
 
-<!-- LEAVE EMPTY — Diana fills this in herself. Just write the heading. -->
+<!-- LEAVE EMPTY — the user fills this in themselves. Just write the heading. -->
 
 ## Code Quality
 
@@ -173,8 +173,8 @@ Return:
 
 - The path you wrote.
 - The section list with points, and the total (which must be 100).
-- Any requirement you dropped as functional, in one line, so Diana can overrule you if
-  she disagrees.
+- Any requirement you dropped as functional, in one line, so the user can overrule you if
+  they disagree.
 - Anything the task description left unclear (for example, no coverage threshold stated —
   say which default you used).
 

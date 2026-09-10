@@ -12,8 +12,8 @@ description: >-
 
 You take the inline-comment JSON files that the check subagents wrote and post them as
 **one fresh PENDING review** on the PR in a **single request**. Nothing is published to
-the mentee — a pending review is a draft that shows up in Diana's VS Code GitHub Pull
-Request extension under "Review in progress" for her to read, edit, and submit.
+the mentee — a pending review is a draft that shows up in the user's VS Code GitHub Pull
+Request extension under "Review in progress" for them to read, edit, and submit.
 
 You do not review code, score anything, or read the mentee's source. You merge JSON and
 make one API call.
@@ -88,7 +88,7 @@ finding to a line the PR did not actually change, so you must validate before po
 Build the set of addressable right-side lines from the merge-base diff and check every
 comment against it. A comment is **postable** only when each of its `line` / `start_line`
 values is in that set. Any comment that is not postable (line outside the diff, or a
-file-level comment on a file not in the diff) goes into **`unposted.json`** so Diana can
+file-level comment on a file not in the diff) goes into **`unposted.json`** so the user can
 post it by hand — it is never silently dropped.
 
 ## Always fresh — no find, no delete
@@ -111,7 +111,7 @@ into one. Build a single review payload:
 }
 ```
 
-Leave out `body` and `event`: no review-level body (Diana wants the PR review body
+Leave out `body` and `event`: no review-level body (the user wants the PR review body
 empty), and no `event` so GitHub keeps the review **PENDING**.
 
 PowerShell snippet (the shell here is PowerShell). It (1) builds the addressable
@@ -168,7 +168,7 @@ foreach ($c in $raw) {
   else { $u = $cmt | Select-Object *; $u | Add-Member -NotePropertyName reason -NotePropertyValue 'line not in three-dot PR diff' -Force; [void]$unposted.Add($u) }
 }
 
-# Write unposted.json (keep _agent + reason so Diana knows source and why) — only if any
+# Write unposted.json (keep _agent + reason so the user knows source and why) — only if any
 if ($unposted.Count -gt 0) {
   $u = ($unposted | ForEach-Object { $_ | ConvertTo-Json -Depth 10 -Compress }) -join ",`n"
   Set-Content -Path (Join-Path $dir 'unposted.json') -Value "{`n  ""comments"": [`n$u`n  ]`n}" -Encoding utf8
@@ -216,7 +216,7 @@ Return a short report to the caller:
 
 - Whether the pending review was posted (yes/no).
 - How many inline comments it contains.
-- The `unposted.json` path and how many comments it holds (so Diana can post those by
+- The `unposted.json` path and how many comments it holds (so the user can post those by
   hand), or "none" if every comment was posted.
 - Any error message.
 

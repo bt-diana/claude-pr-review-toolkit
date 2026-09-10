@@ -70,7 +70,7 @@ Read the diff of each commit and check the message describes what really changed
 - **Too vague to verify** — the message is so general that you cannot tell if it matches the diff (`update code`, `changes`). Flag these under convention too, but note here that the diff shows specific work that should be named.
 - **One commit for the whole task** — a single big commit that contains the entire task, with no development history. The message cannot reflect such a wide range of work. Note this so the parent can judge the development-history criterion.
 
-When you flag a mismatch, say in one short sentence what the diff actually did, so Diana can see the gap. Suggest a better message.
+When you flag a mismatch, say in one short sentence what the diff actually did, so the user can see the gap. Suggest a better message.
 
 ## Output format
 

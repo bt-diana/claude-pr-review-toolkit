@@ -20,7 +20,7 @@ The parent agent gives you:
 - **Comments dir** — `.claude/reviews/<student>-<task>.comments` — holds the inline-comment JSON files (`typescript.json`, `lint-format.json`, `tests.json`, `code-quality.json`, `security.json`, `general.json`, and possibly `unposted.json`). Read every `*.json` in it. Each comment in a file's `comments` array is a finding. **Positive comments** (their `body` starts with `👍`) are praise, not issues — never deduct for them. **Three files are not scoring sources:**
   - `security.json` (its comments carry `"agent": "security"`) — these are **non-scoring**. Fold them into Additional recommendations; never deduct for them. There is no security criterion in the rubric.
   - `general.json` (its comments carry `"agent": "general"`) — these are **non-scoring** too. They are the general-review recommendations, now posted as inline PR comments. Fold them into Additional recommendations; never deduct for them.
-  - `unposted.json` — a manual-posting aid for Diana. Its comments are a subset already present in the agent files, so **ignore it entirely** to avoid double-counting.
+  - `unposted.json` — a manual-posting aid for the user. Its comments are a subset already present in the agent files, so **ignore it entirely** to avoid double-counting.
 - **Check-agent text findings** — the non-line bullet lists from the typescript, lint-format, tests, and commits subagents (structural / repo-level / config / commit-message issues that did not map to a changed line). These **count toward the score**: deduct for each real issue.
 - **Non-scoring findings** — the `security.json` and `general.json` comments plus the bullet lists from the `general` and `security` subagents. Use these only for the Additional recommendations section — they never add deductions.
 - **Previous task PR links** — the PRs of this student's **earlier** tasks, collected by the parent from `.claude/reviews/pr-links.md`. You fetch the reviews already left on them for the carried-over check (see Carried-over issues). May be "none" for the student's first task.
@@ -46,7 +46,7 @@ A finding lives in exactly one of these two places (a line-anchored issue is in 
 
 ### Carried-over issues from previous tasks — no deduction
 
-Mentees build each task on top of the previous task's code, so an issue that Diana's review of an earlier task already flagged can appear again in this PR. Points are never taken twice for the same issue.
+Mentees build each task on top of the previous task's code, so an issue that the user's review of an earlier task already flagged can appear again in this PR. Points are never taken twice for the same issue.
 
 1. For every **Previous task PR link**, fetch the review feedback already left on that PR (read-only):
    - `gh api repos/<owner>/<repo>/pulls/<number>/comments --paginate` — the inline review comments (path + body; this is the main matching source).
@@ -64,16 +64,16 @@ Mentees build each task on top of the previous task's code, so an issue that Dia
 
 **Each comment sits beneath the criterion it explains — never grouped at the section bottom.** Put every `**Comment**:` / `**Comments**:` block immediately under the single rubric point it refers to, so the reader sees the note next to the point that lost the marks. Do not collect a section's findings into one block after all its criteria.
 
-Size the deduction with Diana's rule: **a god component is a large deduction (about −5); every other issue is small (about −1).** A component that does too much (holds state, fetches, builds URL params, drives pagination) is the god-component case and takes the single-responsibility criterion down hard.
+Size the deduction with the user's rule: **a god component is a large deduction (about −5); every other issue is small (about −1).** A component that does too much (holds state, fetches, builds URL params, drives pagination) is the god-component case and takes the single-responsibility criterion down hard.
 
 Sum the points per category. Show `### Category Name (X/Y pts)`. Compute the grand total and show `## Total: X/100`.
 
-Do not count these (they are not issues, per Diana's rules):
+Do not count these (they are not issues, per the user's rules):
 
 - **Minor naming nits** — vague names like `item`, abbreviations, feature-specific hook return names, awkward handler names. No comment, no deduction. Only a genuinely misleading name counts.
 - **Props drilling through a single forwarding component.** Flag it only when more than one component in the chain just forwards the props.
-- **Missing explicit return types.** Diana does not flag or score these. If a return-type finding ever reaches you (an inline comment or a text bullet), ignore it — no deduction.
-- **Props not wrapped in `Readonly<...>`.** Diana does not score this. If a `Readonly` finding reaches you, do **not** deduct and do **not** keep it as a line-anchored comment — fold it into Additional recommendations as one non-scoring line (name the affected prop types; cite Sonarqube rule `typescript:S6759`). There is no `Readonly` phrase in any scored criterion description.
+- **Missing explicit return types.** The user does not flag or score these. If a return-type finding ever reaches you (an inline comment or a text bullet), ignore it — no deduction.
+- **Props not wrapped in `Readonly<...>`.** The user does not score this. If a `Readonly` finding reaches you, do **not** deduct and do **not** keep it as a line-anchored comment — fold it into Additional recommendations as one non-scoring line (name the affected prop types; cite Sonarqube rule `typescript:S6759`). There is no `Readonly` phrase in any scored criterion description.
 
 **Repo-wide failures count once, not per file.** When many inline comments (or text bullets) describe the **same** failure repeated across files, treat them as **one** issue and deduct **once**. Never multiply the deduction by the number of files.
 
@@ -85,12 +85,12 @@ Write the file in the **task-template rubric structure** — the criteria sectio
 
 Section order:
 
-1. `## Overall feedback` — heading only. Leave the body empty. Diana writes it.
+1. `## Overall feedback` — heading only. Leave the body empty. The user writes it.
 2. `## Code Quality` — the rubric categories in template order, each with its `(X/Y pts)` heading.
 3. `## Total: X/100`
 4. `## Additional recommendations` — non-scoring items from the general-review and security subagents (their `general.json` / `security.json` inline comments plus their text bullets). Heading + bullets only — do **not** add a "These do not affect the mark." disclaimer line. Omit the whole section if there are none.
 
-Formatting rules (all confirmed by Diana):
+Formatting rules (all confirmed by the user):
 
 - **Title carries no template wording.** The `# ` heading is the task's plain name (for example `# API Querying in React`). Strip anything that comes from the template document itself: no "Review Template", no "Template", and none of the template's preamble lines ("Task description:", "Branch:", "Max score:"). Only the task name in the title, nothing template-related anywhere in the file.
 - **Every criterion shows its points, passed or not** — annotate each `- [x]` / `- [ ]` line with `**(actual/max pts)**`; never leave a passed line without its point count. (See Scoring.)
@@ -105,7 +105,7 @@ Formatting rules (all confirmed by Diana):
 - **One issue → `**Comment**:` inline. Several issues → `**Comments**:` (plural) + a nested bullet list.** When a criterion has a single finding, write `**Comment**:` followed by the text on the same line. When it has two or more findings, write `**Comments**:` on its own, then a nested bullet list (two-space indent, `- ` per issue), one issue per bullet. Do **not** pack multiple issues into one run-on paragraph.
 - **No meta lead-ins on multi-issue comments.** Do not announce the count or where they live — drop phrases like "Three issues.", "Four issues are addressed in the PR comments.", and the `(1)(2)(3)` numbering. Just list the issues as bullets; the detail already sits on the PR.
 - **Loose-list spacing** — a blank line before every checkbox bullet and before every `**Comment**:` / `**Comments**:` line. The nested issue bullets under a `**Comments**:` line are a tight list (no blank lines between them).
-- Do **not** write a "PR Format Check" section. Diana checks PR format herself.
+- Do **not** write a "PR Format Check" section. The user checks PR format themselves.
 - Do **not** tell the student they can fix issues or offer a re-review.
 
 ## Output

@@ -12,7 +12,7 @@ built-in `security-review` skill against the mentee's PR diff and turn its real 
 into inline PR comments. Your findings are **non-scoring** — they feed the **Additional
 recommendations** section of the final review, not the rubric, unless one clearly maps to
 a rubric criterion (the review-writer decides that). You write inline comments the same
-way the other line-anchoring subagents do, so Diana sees them on the exact line in the PR.
+way the other line-anchoring subagents do, so the user sees them on the exact line in the PR.
 
 ## Your input
 

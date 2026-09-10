@@ -1,8 +1,8 @@
 ---
 name: rs-school-react-pr-review
 description: >-
-  Review an RS School React course pull request from one of Diana's mentees.
-  Use when Diana shares a GitHub PR link from the RS School React course or asks
+  Review an RS School React course pull request from one of the user's mentees.
+  Use when the user shares a GitHub PR link from the RS School React course or asks
   to evaluate a mentee submission — including casual phrasings like "look at this
   PR", "help me grade this", "can you check this submission", "review this for me".
   Performs an end-to-end code-quality review: orchestrates seven check
@@ -14,9 +14,9 @@ description: >-
 
 # RS School React PR Review
 
-You review React PRs for Diana, a mentor in the Rolling Scopes School (RS School)
-React course. She shares PR links from her mentees and expects a complete,
-GitHub-ready code-quality review she can post with minimal edits.
+You review React PRs for the user, a mentor in the Rolling Scopes School (RS School)
+React course. They share PR links from their mentees and expect a complete,
+GitHub-ready code-quality review they can post with minimal edits.
 
 **Why this is a skill and not a subagent:** the workflow below spawns seven check
 subagents in parallel and then a review-writer subagent. A subagent cannot spawn
@@ -46,7 +46,7 @@ same prompt before continuing. If it fails a second time, or fails for a non-tra
 reason, stop and report which subagent failed. Either way, do not compensate by doing
 the check yourself.
 
-**Never pause to ask Diana questions mid-run.** Go through all steps without
+**Never pause to ask the user questions mid-run.** Go through all steps without
 stopping. Everything — missing template, missing PR number, prior review memory — has
 a default: skip what's missing, always post a **fresh** pending review (there is
 always no review already posted, so never look for or delete one). Surface any gaps in
@@ -54,29 +54,30 @@ the final summary.
 
 ### Step 1 — Identify the task
 
-From the PR branch name or PR title (e.g. `hooks-and-routing`, `state-management`,
-`forms`, `api-queries`, `performance`, `nextjs-ssr`). Do **not** follow links to the
-task spec.
+If the user's message names a template path, use it directly and skip inference. Otherwise
+infer the task name from the PR branch name or PR title (e.g. `hooks-and-routing`,
+`state-management`, `forms`, `api-queries`, `performance`, `nextjs-ssr`). Do **not**
+follow links to the task spec.
 
 ### Step 2 — Load the matching review template
 
-Read `.claude/templates/<task-name>.md`. The template is
-the source of truth for **what** to check, the **point weights**, and the **penalty
+Read `.claude/templates/<task-name>.md` (or the path the user gave in Step 1). The template
+is the source of truth for **what** to check, the **point weights**, and the **penalty
 table**.
 
 **Only the template's criteria are evaluated.** Do not consult the RS School task
 description page. If the template doesn't list a criterion, it isn't evaluated. If no
-template exists for the task, note it in the final summary and continue with
-best-effort scoring.
+template exists for the task and the user did not name one, note it in the final summary and
+continue with best-effort scoring.
 
 Available templates: `routing-and-hooks.md`, `state-management.md`, `api-queries.md`,
 `forms.md`, `performance.md`, `nextjs-ssr.md`.
 
 ### Step 3 — Set up the mentee's code
 
-Take the repo URL, PR number, branch, and local folder from Diana's message. Do not
-derive them with `git`/`gh`. If she gave a local repo path (a sibling clone next to this
-project, e.g. `<workspace>/<mentee>`), use it directly — do not clone. If she did not,
+Take the repo URL, PR number, branch, and local folder from the user's message. Do not
+derive them with `git`/`gh`. If they gave a local repo path (a sibling clone next to this
+project, e.g. `<workspace>/<mentee>`), use it directly — do not clone. If they did not,
 clone the PR branch to a local working directory. Either way, install dependencies
 (`npm install`) using the absolute path.
 
@@ -202,10 +203,10 @@ a comment on that file's first changed line before posting.
 There is always no review posted, so it never looks for or deletes an existing one.
 Before posting, the skill validates every comment against the PR's three-dot diff and
 moves any comment GitHub cannot anchor into an **`unposted.json`** file in the comments
-directory, so Diana can post those by hand. Relay its result (posted yes/no, comment
-count, and the `unposted.json` path + count if any) into your final summary. Diana opens
+directory, so the user can post those by hand. Relay its result (posted yes/no, comment
+count, and the `unposted.json` path + count if any) into your final summary. The user opens
 the PR in the VS Code GitHub Pull Request extension, where the comments appear under
-"Review in progress" for her to edit and submit.
+"Review in progress" for them to edit and submit.
 
 ### Step 5 — Collect findings
 
@@ -216,7 +217,7 @@ You now have two kinds of input, both already on disk or in hand:
    review-writer **scores** the typescript / lint-format / tests / code-quality
    comments (except `👍` positive ones). The `security.json` and `general.json` comments are
    **non-scoring** (Additional recommendations). The `unposted.json` file, if present, is a
-   manual-posting aid for Diana — its comments are already in the agent files, so the
+   manual-posting aid for the user — its comments are already in the agent files, so the
    review-writer ignores it.
 2. The **text bullet lists** the subagents returned for findings that did not map to a
    changed line (structural code-quality issues, all commit findings, the tests run
@@ -263,7 +264,7 @@ over unchanged (the comment still posts; only the points are not taken twice). T
 `security.json` and `general.json` comments and the `general` / `security` text findings stay
 non-scoring and feed the Additional recommendations; `unposted.json` is ignored (already
 counted via the agent files). Scoring, the penalty table, and the file contents are entirely
-the review-writer's job; relay its returned total back to Diana.
+the review-writer's job; relay its returned total back to the user.
 
 ## Subagents
 
@@ -294,18 +295,18 @@ score or format anything yourself. The review-writer owns:
 - the penalty table and the `## Total: X/100` line,
 - the B2-English writing tone,
 - the "no file links in review.md / terse comments" rules,
-- the empty `## Overall feedback` heading (Diana fills the body herself).
+- the empty `## Overall feedback` heading (the user fills the body themselves).
 
-**PR Format Check — skip it.** Diana checks the PR description format herself (task
+**PR Format Check — skip it.** The user checks the PR description format themselves (task
 link, screenshot, deploy URL, dates, self-assessment) and applies any related penalty
 separately. The review file starts at `## Overall feedback` and contains only the
 code-quality rubric.
 
 ## Memory
 
-Diana's feedback rules and profile live in the user-level memory loaded into this main
+The user's feedback rules and profile live in the user-level memory loaded into this main
 loop (`MEMORY.md`). Read and apply them. When you learn a new RS School convention,
-Diana stylistic preference, recurring mentee issue, or task rubric detail during a
+stylistic preference, recurring mentee issue, or task rubric detail during a
 review, save it there as a `feedback`/`project`/`reference` memory so future reviews get
 sharper.
 
@@ -318,7 +319,7 @@ sharper.
 
 ## Override
 
-The template is authoritative. The subagents own the per-area check lists. If Diana
+The template is authoritative. The subagents own the per-area check lists. If the user
 states an exception for the current review (e.g. "ignore ESLint warnings for this
-one"), follow her instruction and pass the exception through to the affected subagent's
+one"), follow their instruction and pass the exception through to the affected subagent's
 prompt.

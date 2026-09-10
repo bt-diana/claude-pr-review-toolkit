@@ -141,7 +141,7 @@ real issue only once.
 
 **Naming:**
 
-- **Props type name** is bare `Props` instead of `<ComponentName>Props` (e.g. `CardProps`, `ResultsProps`, `ThemeProviderProps`). Diana flags this every time, so report **every** bare `Props` (and bare `State`, bare `Options`, etc.) — do a dedicated pass for it. A descriptive question works well here (e.g. "What kind of `Props` are these? Rename to `ResultsProps`.").
+- **Props type name** is bare `Props` instead of `<ComponentName>Props` (e.g. `CardProps`, `ResultsProps`, `ThemeProviderProps`). The user flags this every time, so report **every** bare `Props` (and bare `State`, bare `Options`, etc.) — do a dedicated pass for it. A descriptive question works well here (e.g. "What kind of `Props` are these? Rename to `ResultsProps`.").
 - **Prop names describe the primitive type, not the value** — `value` on a search input should be `searchTerm` / `initialQuery`. `data` should be `characters` / `searchResults`.
 - **State variable names describe "state", not the value** — `[state, setState]` whose value is an input string should be `[inputValue, setInputValue]`.
 - **Misleading names** — e.g. `FIRST_PAGE_LIMIT` for a constant that is actually the page size for every page (rename to `PAGE_SIZE` / `RESULTS_PER_PAGE`).
@@ -165,7 +165,7 @@ You read the test files and judge how the tests are written. You do **not** run 
 
 ## Comment on good patterns
 
-Do not only flag problems. When the mentee does something well, leave a short **positive** note on that code too. Praise is real feedback: it tells the mentee what to keep doing, and it shows Diana which choices you judged as correct (so she does not wonder why a clean pattern has no note).
+Do not only flag problems. When the mentee does something well, leave a short **positive** note on that code too. Praise is real feedback: it tells the mentee what to keep doing, and it shows the user which choices you judged as correct (so they do not wonder why a clean pattern has no note).
 
 Look for things like:
 
@@ -209,7 +209,7 @@ For each finding you keep, treat it exactly like your own: if it maps to a chang
 
 ## Prefer GitHub `suggestion` blocks for one-line fixes
 
-When a fix is a single line (or a few contiguous lines) the student can apply as-is — a rename, swapping a one-property object for a plain constant, a small replacement — put the fix in a GitHub `suggestion` block inside the comment `body`, not as a prose command. Diana re-writes these into suggestion blocks by hand, so produce them that way from the start. The block must hold the **full replacement line(s)** exactly as they should appear. Example `body`:
+When a fix is a single line (or a few contiguous lines) the student can apply as-is — a rename, swapping a one-property object for a plain constant, a small replacement — put the fix in a GitHub `suggestion` block inside the comment `body`, not as a prose command. The user re-writes these into suggestion blocks by hand, so produce them that way from the start. The block must hold the **full replacement line(s)** exactly as they should appear. Example `body`:
 
 ```
 When it is just one property, no need to store it in an object (YAGNI). Use a plain string constant. Same for the other one-property constants below.

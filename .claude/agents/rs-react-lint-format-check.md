@@ -56,7 +56,7 @@ The parent agent will give you:
 
 ## Repo-wide failures: report once, never one-per-file
 
-When the **same** rule fails across all or most files — the classic case is `prettier/prettier` reporting `Delete ␍` (CRLF line endings) on every line of every `.ts`/`.tsx` file, usually from Windows `autocrlf=true` with no `.gitattributes` — do **not** write one inline comment per file. Diana deletes every one of those (in this PR she removed all 23). Instead:
+When the **same** rule fails across all or most files — the classic case is `prettier/prettier` reporting `Delete ␍` (CRLF line endings) on every line of every `.ts`/`.tsx` file, usually from Windows `autocrlf=true` with no `.gitattributes` — do **not** write one inline comment per file. The user deletes every one of those (in this PR they removed all 23). Instead:
 
 - Write **no** inline comments for it. Report it **once** as a single bullet in your returned list, naming it as a repo-wide failure and the root cause (e.g. "add a `.gitattributes` with `* text=auto eol=lf` and run `npm run format`").
 - Mark the bullet **(non-scoring — line endings)**. A CRLF/line-endings failure never deducts points: the review-writer treats the lint/Prettier run as clean when line endings are the only problem, and mentions the CRLF issue under Additional recommendations only. Report which real errors remain once the `Delete ␍` noise is excluded — those still score.

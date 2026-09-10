@@ -41,7 +41,7 @@ The parent agent will give you:
 - **Type-suppression comments**: `// @ts-ignore`, `// @ts-expect-error`, `// @ts-nocheck`.
 - **Missing parameter types** on function arguments.
 
-> **Do NOT flag missing explicit return types.** Diana removes every "add `: void` / `: JSX.Element` / `: string` return type" comment — on handlers, components, and hooks alike — so this category is not reported and not scored. Skip it entirely.
+> **Do NOT flag missing explicit return types.** The user removes every "add `: void` / `: JSX.Element` / `: string` return type" comment — on handlers, components, and hooks alike — so this category is not reported and not scored. Skip it entirely.
 - **Strict mode flags missing** in `tsconfig.json` or `tsconfig.app.json`: `"strict": true`, `"noImplicitAny": true`.
 - **Bare string/number constants** that should be enums or `as const` objects — common targets:
   - Route paths (`/`, `/about`, `/details/:id`)
@@ -51,12 +51,12 @@ The parent agent will give you:
   - API enum-like values (`status`, `species`, `gender`)
 - **Generics missing where they would help** — typed API responses, reusable hooks.
 - **Bare `string` / `number` where a literal union would fit** — when the value comes from a known finite set.
-- **Component props not marked `Readonly`** — do NOT write an inline code comment for this and do NOT score it. Diana removes every "wrap the props in `Readonly<...>`" comment. Instead, note it **once** as a non-scoring line under Additional recommendations: list the affected prop types and cite Sonarqube rule `typescript:S6759`. Never put it in a line-anchored comment JSON.
+- **Component props not marked `Readonly`** — do NOT write an inline code comment for this and do NOT score it. The user removes every "wrap the props in `Readonly<...>`" comment. Instead, note it **once** as a non-scoring line under Additional recommendations: list the affected prop types and cite Sonarqube rule `typescript:S6759`. Never put it in a line-anchored comment JSON.
 - **Class access modifiers missing** where applicable (`private`, `public`, `protected`).
 
 ## Prefer GitHub `suggestion` blocks for one-line fixes
 
-When a fix is a single line the student can apply as-is — a rename, swapping a value — write the fix as a GitHub `suggestion` block inside the comment `body`, not as a prose command. Diana re-writes these comments into suggestion blocks by hand, so produce them that way from the start. The block must contain the **full replacement line(s)** exactly as they should appear in the file. (Do NOT use a suggestion block for `Readonly<...>` — that issue is a non-scoring Additional recommendation, not an inline comment.) Example `body` for a rename fix:
+When a fix is a single line the student can apply as-is — a rename, swapping a value — write the fix as a GitHub `suggestion` block inside the comment `body`, not as a prose command. The user re-writes these comments into suggestion blocks by hand, so produce them that way from the start. The block must contain the **full replacement line(s)** exactly as they should appear in the file. (Do NOT use a suggestion block for `Readonly<...>` — that issue is a non-scoring Additional recommendation, not an inline comment.) Example `body` for a rename fix:
 
 ```
 The prop type is named `Props`; the codebase names prop types `<ComponentName>Props`.
