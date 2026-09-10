@@ -1,0 +1,27 @@
+{
+  "name": "claude-pr-review-toolkit",
+  "version": "1.0.0",
+  "description": "Claude Code agents and skills that draft code-quality reviews for RS School React course pull requests: seven checks run in parallel, findings post as one pending review, and a single agent does the scoring.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "ai-agents",
+    "subagents",
+    "code-review",
+    "pull-request",
+    "mentoring",
+    "rs-school",
+    "react",
+    "typescript"
+  ],
+  "homepage": "https://github.com/bt-diana/claude-pr-review-toolkit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bt-diana/claude-pr-review-toolkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bt-diana/claude-pr-review-toolkit/issues"
+  },
+  "author": "Diana Butiakova",
+  "license": "MIT"
+}
